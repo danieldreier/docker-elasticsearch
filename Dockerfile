@@ -1,25 +1,22 @@
-#FROM stackbrew/ubuntu:saucy
-#MAINTAINER Marcel de Graaf <mail@marceldegraaf.net>
 FROM debian:wheezy
 MAINTAINER Daniel Dreier <daniel@deployto.me>
 
+# add elasticsearch apt repository
+ADD GPG-KEY-elasticsearch /tmp/GPG-KEY-elasticsearch
+RUN apt-key add /tmp/GPG-KEY-elasticsearch
+RUN echo 'deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main' >> /etc/apt/sources.list
 
-# Install Java
 RUN apt-get -y update
 RUN apt-get -y upgrade
+RUN apt-get -y install elasticsearch
 RUN apt-get install -y --force-yes openjdk-7-jre-headless wget
 
-# Install Elasticsearch
-RUN mkdir -p /opt/elasticsearch
-RUN wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.0.1.tar.gz -O /tmp/elasticsearch-1.0.1.tar.gz
-RUN tar xfz /tmp/elasticsearch-1.0.1.tar.gz -C /opt/elasticsearch --strip-components=1
-
 # Install plugins
-RUN /opt/elasticsearch/bin/plugin -install lmenezes/elasticsearch-kopf
-RUN /opt/elasticsearch/bin/plugin -url http://download.elasticsearch.org/kibana/kibana/kibana-latest.zip -install elasticsearch/kibana3
+RUN /usr/share/elasticsearch/bin/plugin -install lmenezes/elasticsearch-kopf
+RUN /usr/share/elasticsearch/bin/plugin -url http://download.elasticsearch.org/kibana/kibana/kibana-latest.zip -install elasticsearch/kibana3
 
 # Expose port 9200
 EXPOSE 9200
 
 # Start Elasticsearch
-CMD /opt/elasticsearch/bin/elasticsearch
+CMD /usr/share/elasticsearch/bin/elasticsearch
