@@ -3,9 +3,8 @@ MAINTAINER Daniel Dreier <daniel@deployto.me>
 
 EXPOSE 9200
 RUN apt-get -y update
-RUN apt-get -y install command-not-found procps
+RUN apt-get -y install command-not-found procps vim
 RUN update-command-not-found
-RUN touch /etc/puppet/hiera.yaml
 
 ADD Puppetfile /etc/puppet/Puppetfile
 RUN cd /etc/puppet; r10k puppetfile install
@@ -19,3 +18,11 @@ RUN puppet apply /etc/puppet/modules/site/site.pp
 
 # Start Elasticsearch
 #CMD /usr/share/elasticsearch/bin/elasticsearch
+
+RUN wget https://github.com/coreos/etcd/releases/download/v0.3.0/etcd-v0.3.0-linux-amd64.tar.gz
+RUN tar -xzvf etcd-v0.3.0-linux-amd64.tar.gz
+RUN cp etcd-v0.3.0-linux-amd64/etc* /usr/local/bin
+RUN cd /usr/lib/ruby/vendor_ruby/hiera/backend; wget https://raw.githubusercontent.com/garethr/hiera-etcd/master/lib/hiera/backend/etcd_backend.rb
+ADD hiera.yaml /etc/hiera.yaml
+RUN ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
+RUN gem install etcd

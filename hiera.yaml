@@ -1,0 +1,9 @@
+:backends:
+  - etcd
+
+:http:
+  :host: 172.17.42.1
+  :port: 4001
+  :paths:
+    - /configuration/%{fqdn}
+    - /configuration/common
