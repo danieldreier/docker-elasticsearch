@@ -26,3 +26,13 @@ RUN cd /usr/lib/ruby/vendor_ruby/hiera/backend; wget https://raw.githubuserconte
 ADD hiera.yaml /etc/hiera.yaml
 RUN ln -s /etc/hiera.yaml /etc/puppet/hiera.yaml
 RUN gem install etcd
+
+RUN wget -O confd_0.3.0_linux_amd64.tar.gz https://github.com/kelseyhightower/confd/releases/download/v0.3.0/confd_0.3.0_linux_amd64.tar.gz
+RUN tar -zxvf confd_0.3.0_linux_amd64.tar.gz
+RUN mv confd /usr/local/bin/confd
+RUN mkdir -p /etc/confd/{conf.d,templates}
+ADD myconfig.toml /etc/confd/conf.d/myconfig.toml
+ADD myconfig.conf.tmpl /etc/confd/templates/myconfig.conf.tmpl
+ADD confd.toml /etc/confd/confd.toml
+
+#CMD confd -verbose -debug=true

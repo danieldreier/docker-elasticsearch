@@ -1,0 +1,8 @@
+[template]
+src = "myconfig.conf.tmpl"
+dest = "/tmp/myconfig.conf"
+keys = [
+  "/myapp/database/url",
+  "/myapp/database/user",
+]
+reload_cmd = "/usr/bin/puppet apply -l /tmp/manifest.log /etc/puppet/modules/site/site.pp"
